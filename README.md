@@ -92,11 +92,35 @@ g_background_iterations
 
 ## 8. Preparacion rapida
 
-1. Reutilice `tools/local_config.ps1` de la guia general.
-2. Abra la carpeta con `code .`.
-3. Ejecute `Verify GD32 Environment`.
-4. Ejecute `Build + Flash GD32 Events`.
-5. Genere `launch.json` y compruebe las variables con breakpoints.
+El flujo para el estudiante se realiza desde la interfaz de Visual Studio Code:
+
+1. Abra esta carpeta mediante `File > Open Folder`.
+2. Acepte `Trust` si VS Code pregunta si confia en el proyecto.
+3. Duplique `tools/local_config.example.ps1`, cambie el nombre de la copia a
+   `local_config.ps1` y complete las tres rutas locales.
+4. Abra `Terminal > Run Task` y ejecute `1. Verificar entorno GD32`.
+5. Ejecute `5. Compilar y programar GD32`.
+6. Ejecute una sola vez `6. Preparar depuracion`.
+7. Abra `Run and Debug`, seleccione la configuracion del GD32 y pulse el boton
+   verde.
+
+No es necesario escribir comandos PowerShell. Las tareas de VS Code invocan
+internamente pequeños scripts de soporte para comprobar las rutas y comunicarse
+con las herramientas instaladas en Windows.
 
 El repositorio excluye `build/`, rutas personales, el SDK, el toolchain,
 OpenOCD, `tools/local_config.ps1` y `.vscode/launch.json`.
+
+## 9. Sobre los scripts de soporte
+
+Los archivos `.ps1` de `tools/` no contienen el ejercicio ni sustituyen a
+CMake. Son adaptadores locales para Windows que:
+
+- leen rutas que cambian entre computadores;
+- verifican el SDK, el compilador y OpenOCD;
+- llaman a CMake u OpenOCD con los argumentos correctos;
+- crean una configuracion de depuracion sin publicar rutas personales.
+
+El estudiante puede trabajar exclusivamente con las tareas numeradas de VS
+Code. Los scripts se documentan para que el proceso sea reproducible y no una
+configuracion oculta.

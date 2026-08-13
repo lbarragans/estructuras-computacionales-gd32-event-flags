@@ -2,13 +2,14 @@
 
 ## Crear configuracion
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass `
-  -File .\tools\create_debug_config.ps1
-```
+1. Abra `Terminal > Run Task`.
+2. Ejecute una sola vez `6. Preparar depuracion`.
+3. Abra `Run and Debug`.
+4. Seleccione `Debug GD32VW553 - Cortex Debug`.
+5. Pulse el boton verde. Si F5 no responde, use siempre ese boton.
 
-Abra `Run and Debug`, seleccione `Debug GD32VW553 - Cortex Debug` y pulse el
-boton verde si F5 no responde.
+La tarea crea `.vscode/launch.json` con las rutas del computador. Este archivo
+es local y no debe publicarse.
 
 ## Breakpoints recomendados
 

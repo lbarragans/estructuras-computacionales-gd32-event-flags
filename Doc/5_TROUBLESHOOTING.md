@@ -7,9 +7,9 @@ extension atomica de RISC-V.
 
 ## CMake no encuentra el compilador
 
-Ejecute `tools/configure.ps1`, que carga las rutas desde
-`tools/local_config.ps1`. Si cambio rutas, elimine `build/` y configure de
-nuevo.
+Revise `tools/local_config.ps1` y ejecute `1. Verificar entorno GD32`. Si
+cambio una ruta, elimine la carpeta `build` desde el Explorador y ejecute
+`2. Configurar CMake (Debug)` nuevamente.
 
 ## `ninja: no work to do`
 
@@ -25,12 +25,15 @@ No es un error: las fuentes no cambiaron desde la ultima compilacion.
 ## Depuracion no inicia con F5
 
 Use `Run and Debug` y el boton verde. Si no aparece la configuracion, ejecute
-`tools/create_debug_config.ps1` y recargue VS Code.
+la tarea `6. Preparar depuracion` y recargue VS Code.
 
 ## Archivos que Git debe ignorar
 
-```powershell
+```text
 git check-ignore .\build
 git check-ignore .\tools\local_config.ps1
 git check-ignore .\.vscode\launch.json
 ```
+
+Estos tres comandos son solo una comprobacion previa para quien vaya a
+publicar el repositorio; no forman parte de la practica del estudiante.

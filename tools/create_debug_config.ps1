@@ -56,7 +56,7 @@ $LaunchConfiguration = [ordered]@{
             )
             overrideResetCommands = @("monitor reset halt")
             runToEntryPoint = "main"
-            preLaunchTask = "Build GD32 Debug"
+            preLaunchTask = "3. Compilar GD32 (Debug)"
             showDevDebugOutput = "raw"
         }
     )

@@ -2,7 +2,7 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Verify GD32 Environment",
+      "label": "1. Verificar entorno GD32",
       "type": "process",
       "command": "powershell",
       "args": [
@@ -16,7 +16,7 @@
       "problemMatcher": []
     },
     {
-      "label": "Create Debug Configuration",
+      "label": "6. Preparar depuracion",
       "type": "process",
       "command": "powershell",
       "args": [
@@ -30,7 +30,7 @@
       "problemMatcher": []
     },
     {
-      "label": "Configure GD32 Debug",
+      "label": "2. Configurar CMake (Debug)",
       "type": "process",
       "command": "powershell",
       "args": [
@@ -46,18 +46,18 @@
       "problemMatcher": []
     },
     {
-      "label": "Build GD32 Debug",
+      "label": "3. Compilar GD32 (Debug)",
       "type": "process",
       "command": "cmake",
       "args": ["--build", "--preset", "build-debug"],
       "dependsOrder": "sequence",
-      "dependsOn": ["Configure GD32 Debug"],
+      "dependsOn": ["2. Configurar CMake (Debug)"],
       "options": { "cwd": "${workspaceFolder}" },
       "problemMatcher": ["$gcc"],
       "group": { "kind": "build", "isDefault": true }
     },
     {
-      "label": "Flash GD32 Debug",
+      "label": "4. Programar GD32 (Debug)",
       "type": "process",
       "command": "powershell",
       "args": [
@@ -73,9 +73,9 @@
       "problemMatcher": []
     },
     {
-      "label": "Build + Flash GD32 Events",
+      "label": "5. Compilar y programar GD32",
       "dependsOrder": "sequence",
-      "dependsOn": ["Build GD32 Debug", "Flash GD32 Debug"],
+      "dependsOn": ["3. Compilar GD32 (Debug)", "4. Programar GD32 (Debug)"],
       "problemMatcher": []
     }
   ]
