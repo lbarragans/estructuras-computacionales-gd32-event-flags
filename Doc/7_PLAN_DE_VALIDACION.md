@@ -1,106 +1,26 @@
 # 7. Plan de validacion
 
-## Comportamiento funcional base
+## Comportamiento comun
 
-El LED debe alternar:
+- LED tick cada 250 ms;
+- evento de segundo cada 1000 ms;
+- cambio lento/rapido cada 5000 ms;
+- prioridad de despacho: modo, segundo, LED;
+- trabajo de fondo activo mientras no hay eventos.
 
-```text
-5 s modo lento: cambio cada 500 ms
-5 s modo rapido: cambio cada 250 ms
-repetir
-```
+## Referencia
 
-Los eventos fuente continuan siendo:
+Compilar con `build-debug` y observar flags, snapshots, publicaciones,
+segundos, cambios de modo y toggles.
 
-```text
-250 ms  -> LED_TICK
-1000 ms -> ONE_SECOND
-5000 ms -> MODE_CHANGE
-```
+## Assembly
 
-## Caso simultaneo
-
-En 5000 ms pueden coincidir:
-
-```text
-EVENT_LED_TICK
-EVENT_ONE_SECOND
-EVENT_MODE_CHANGE
-```
-
-Para bitmask:
-
-```text
-snapshot esperado = 0x07
-```
-
-## Carrera productor/consumidor
-
-Probar que una publicacion que ocurre alrededor del momento del `claim` no se
-pierde por una secuencia no atomica.
-
-## Coalescencia
-
-Generar el mismo evento varias veces antes del consumo.
-
-Esperado:
-
-### Flags
-
-```text
-N publicaciones -> 1 bit pendiente
-```
-
-### Counters
-
-```text
-N publicaciones -> contador aumenta N
-```
-
-### Queue
-
-```text
-N publicaciones -> N elementos si existe capacidad
-```
-
-## Cola llena
-
-Toda variante de queue debe definir la politica:
-
-- rechazar nuevo;
-- sobrescribir antiguo;
-- bloquear (solo si contexto lo permite).
-
-Una ISR no debe bloquear esperando espacio.
-
-## Assembly AMO
-
-Observar:
-
-- direccion en `a0`;
-- mascara en `a1`;
-- `amoor.w.aqrl`;
-- `amoswap.w.aqrl`;
-- valor anterior retornado por `claim`.
+Integrar `main.S` sin C de aplicacion. Verificar extension A, operaciones AMO,
+ISR de 1 ms, coalescencia, claim atomico y contadores globales.
 
 ## FreeRTOS
 
-Solo marcar validada despues de integrar:
+Integrar kernel, port, heap, tick y configuracion. Verificar set/wait/clear de
+bits, prioridades y bloqueo eficiente del consumidor.
 
-- kernel;
-- port RISC-V;
-- `FreeRTOSConfig.h`;
-- heap;
-- scheduler;
-- tick;
-- Event Group;
-- API ISR-safe cuando corresponda.
-
-## Estados
-
-- Base actual
-- Fuente lista
-- Analisis
-- Integracion pendiente
-- Validada por compilacion
-- Validada en placa
+Ninguna ruta se marca validada sin compilacion y prueba fisica.
