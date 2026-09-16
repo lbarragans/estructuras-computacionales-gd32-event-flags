@@ -23,4 +23,16 @@ ISR de 1 ms, coalescencia, claim atomico y contadores globales.
 Integrar kernel, port, heap, tick y configuracion. Verificar set/wait/clear de
 bits, prioridades y bloqueo eficiente del consumidor.
 
-Ninguna ruta se marca validada sin compilacion y prueba fisica.
+Las tres rutas fueron compiladas, programadas y verificadas fisicamente con
+WCH-Link/CMSIS-DAP v2, JTAG a 50 kHz.
+
+## Resultado visible esperado
+
+1. El LED PC13 conmuta lentamente, cada 500 ms, durante 5 segundos.
+2. Despues conmuta rapidamente, cada 250 ms, durante 5 segundos.
+3. El ciclo lento/rapido se repite indefinidamente.
+4. OpenOCD debe terminar con `Programming Finished` y `Verified OK`.
+
+- [x] Original C validado en placa
+- [x] Ensamblador RISC-V puro validado en placa
+- [x] FreeRTOS Event Groups validado en placa

@@ -42,6 +42,40 @@ variantes antiguas fueron retiradas.
 
 | Implementacion | Estado |
 |---|---|
-| Referencia C | funcional |
-| Assembly puro | fuente lista; integracion y placa pendientes |
-| FreeRTOS | fuente lista; kernel/port e integracion pendientes |
+| Referencia C | validada en placa |
+| Assembly puro | validada en placa |
+| FreeRTOS | validada en placa con el MSDK V1.0.3g |
+
+## Ejecutar las variantes
+
+Referencia original por JTAG/OpenOCD:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\\tools\\build_variant.ps1 -Variant original -Flash
+```
+
+Assembly puro por JTAG/OpenOCD:
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\\tools\\build_variant.ps1 -Variant assembly -Flash
+```
+
+En VS Code abra **Terminal > Run Task** y elija una de estas tareas:
+
+- `Build + Flash Original`
+- `Build + Flash Assembly`
+- `Build + Flash FreeRTOS`
+
+Las tres producen el mismo patron observable: el LED cambia entre modo lento
+(conmutacion cada 500 ms) y modo rapido (cada 250 ms). El cambio ocurre cada
+5 segundos. La bandera de un segundo se procesa internamente y puede observarse
+en depuracion.
+
+FreeRTOS usa el port oficial del SDK WiFi V1.0.3g. El script de VS Code copia
+automaticamente `main.c` y `app_cfg.h` hacia `MSDK/app`, compila `image-all.bin`
+y lo graba desde VS Code.
+
+## Guía central de ejecución
+
+Consulte la [guía central GD32VW553](https://github.com/lbarragans/gd32vw553-vscode-cmake-guide)
+antes de compilar o integrar las variantes Assembly y FreeRTOS.

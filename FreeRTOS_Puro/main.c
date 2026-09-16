@@ -1,5 +1,11 @@
 #include <stdint.h>
 
+#include "app_cfg.h"
+#include "gd32vw55x_platform.h"
+#include "wrapper_os.h"
+
+#include "gd32vw55x.h"
+
 #include "FreeRTOS.h"
 #include "event_groups.h"
 #include "task.h"
@@ -13,6 +19,27 @@ static EventGroupHandle_t event_group;
 static volatile uint32_t handled_led_ticks = 0U;
 static volatile uint32_t handled_seconds = 0U;
 static volatile uint32_t handled_mode_changes = 0U;
+static volatile uint8_t fast_mode = 0U;
+static uint8_t slow_tick_divider = 0U;
+
+#define LED_GPIO_PORT  GPIOC
+#define LED_GPIO_PIN   GPIO_PIN_13
+#define LED_GPIO_CLOCK RCU_GPIOC
+
+static void led_init(void)
+{
+    rcu_periph_clock_enable(LED_GPIO_CLOCK);
+    gpio_mode_set(LED_GPIO_PORT, GPIO_MODE_OUTPUT, GPIO_PUPD_NONE, LED_GPIO_PIN);
+    gpio_output_options_set(
+        LED_GPIO_PORT, GPIO_OTYPE_PP, GPIO_OSPEED_10MHZ, LED_GPIO_PIN
+    );
+    gpio_bit_set(LED_GPIO_PORT, LED_GPIO_PIN);
+}
+
+static void led_toggle(void)
+{
+    gpio_bit_toggle(LED_GPIO_PORT, LED_GPIO_PIN);
+}
 
 /*
  * Productor pedagogico por tarea.
@@ -61,6 +88,8 @@ static void consumer_task(void *argument)
 
         if ((bits & EVT_MODE_CHANGE) != 0U) {
             handled_mode_changes++;
+            fast_mode ^= 1U;
+            slow_tick_divider = 0U;
         }
 
         if ((bits & EVT_ONE_SECOND) != 0U) {
@@ -69,12 +98,24 @@ static void consumer_task(void *argument)
 
         if ((bits & EVT_LED_TICK) != 0U) {
             handled_led_ticks++;
+            if (fast_mode != 0U) {
+                led_toggle();
+            } else {
+                slow_tick_divider++;
+                if (slow_tick_divider >= 2U) {
+                    slow_tick_divider = 0U;
+                    led_toggle();
+                }
+            }
         }
     }
 }
 
 int main(void)
 {
+    sys_os_init();
+    platform_init();
+    led_init();
     event_group = xEventGroupCreate();
 
     if (event_group == NULL) {
@@ -82,7 +123,7 @@ int main(void)
         }
     }
 
-    (void)xTaskCreate(
+    BaseType_t producer_ok = xTaskCreate(
         producer_task,
         "Producer",
         configMINIMAL_STACK_SIZE,
@@ -91,7 +132,7 @@ int main(void)
         NULL
     );
 
-    (void)xTaskCreate(
+    BaseType_t consumer_ok = xTaskCreate(
         consumer_task,
         "Consumer",
         configMINIMAL_STACK_SIZE,
@@ -100,7 +141,12 @@ int main(void)
         NULL
     );
 
-    vTaskStartScheduler();
+    if ((producer_ok != pdPASS) || (consumer_ok != pdPASS)) {
+        for (;;) {
+        }
+    }
+
+    sys_os_start();
 
     for (;;) {
     }
